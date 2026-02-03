@@ -7,11 +7,11 @@ export default async function handler(req, res) {
   if (!thoughts || !thoughts.length) return res.status(400).json({ error: 'No thoughts provided' });
 
   try {
-    // -------------------- ВАЖНО --------------------
-    // Используем Environment Variable, которую ты создал
-    // Key: GIGACHAT_API_PERS
-    // Value: твой API ключ Gigachat
-    const API_KEY = process.env.GIGACHAT_API_PERS;
+    const API_KEY = process.env.GIGACHAT_API_PERS; // <-- твоя ENV переменная на Vercel
+
+    if (!API_KEY) {
+      return res.status(500).json({ error: 'API key not found. Check your Environment Variables' });
+    }
 
     const systemPrompt = `
 Ты — квалифицированный психолог-аналитик. Тебе предоставлены короткие мысли человека, записанные в случайные моменты дня. Эти записи отражают текущие ощущения, размышления и наблюдения автора о себе и своём поведении.
@@ -28,14 +28,14 @@ export default async function handler(req, res) {
 - не использовать эмоциональные оценки типа “хорошо/плохо”;
 - фокусироваться на фактах из текста, паттернах и наблюдаемых тенденциях.
 
-Дай результат в виде чёткого структурного анализа мыслей, перечисляя выявленные темы, повторения, зацикленности и особенности мышления.
+Дай результат в виде чёткого структурного анализа мыслей.
 `;
 
     const response = await fetch('https://api.gigachat.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`, // <-- теперь используется GIGACHAT_API_PERS
+        'Authorization': `Bearer ${API_KEY}`,
       },
       body: JSON.stringify({
         model: 'gigachat-standard',
