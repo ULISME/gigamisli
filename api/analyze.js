@@ -8,10 +8,10 @@ export default async function handler(req, res) {
 
   try {
     // -------------------- ВАЖНО --------------------
-    // Вставьте свой API ключ Gigachat в Environment Variables на Vercel
-    // Key: GIGACHAT_API_KEY
-    // Value: ваш ключ
-    const API_KEY = process.env.GIGACHAT_API_KEY;
+    // Используем Environment Variable, которую ты создал
+    // Key: GIGACHAT_API_PERS
+    // Value: твой API ключ Gigachat
+    const API_KEY = process.env.GIGACHAT_API_PERS;
 
     const systemPrompt = `
 Ты — квалифицированный психолог-аналитик. Тебе предоставлены короткие мысли человека, записанные в случайные моменты дня. Эти записи отражают текущие ощущения, размышления и наблюдения автора о себе и своём поведении.
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`, // <-- сюда ключ из ENV
+        'Authorization': `Bearer ${API_KEY}`, // <-- теперь используется GIGACHAT_API_PERS
       },
       body: JSON.stringify({
         model: 'gigachat-standard',
@@ -59,4 +59,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to get analysis' });
   }
 }
-
